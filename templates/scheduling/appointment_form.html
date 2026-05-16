@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-title">
+  <span class="eyebrow">Novo agendamento</span>
+  <h1>Cadastro do paciente e consulta</h1>
+  <p>A view envia os dados para a facade, que aciona Builder, Factory, Strategy e Observer.</p>
+</section>
+
+<form method="post" class="form-panel">
+  {% csrf_token %}
+  <div class="form-section">
+    <h2>Paciente</h2>
+    <div class="form-grid">
+      {% for field in form %}
+        {% if forloop.counter <= 7 %}
+          <label class="field">
+            <span>{{ field.label }}</span>
+            {{ field }}
+            {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </label>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="form-section">
+    <h2>Consulta</h2>
+    <div class="form-grid">
+      {% for field in form %}
+        {% if forloop.counter > 7 %}
+          <label class="field">
+            <span>{{ field.label }}</span>
+            {{ field }}
+            {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </label>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="field-error">{{ form.non_field_errors }}</div>
+  {% endif %}
+
+  <div class="form-actions">
+    <a class="button" href="{% url 'dashboard' %}">Cancelar</a>
+    <button class="button button-primary" type="submit">Confirmar agendamento</button>
+  </div>
+</form>
+{% endblock %}

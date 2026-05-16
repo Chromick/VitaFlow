@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="detail-layout">
+  <article class="panel detail-card">
+    <div class="section-heading">
+      <span class="eyebrow">{{ appointment.get_kind_display }}</span>
+      <h1>{{ appointment.patient.name }}</h1>
+    </div>
+
+    <div class="detail-grid">
+      <div>
+        <span>Medico</span>
+        <strong>{{ appointment.doctor.name }}</strong>
+        <small>{{ appointment.doctor.specialty }}</small>
+      </div>
+      <div>
+        <span>Data</span>
+        <strong>{{ appointment.scheduled_for|date:"d/m/Y" }}</strong>
+        <small>{{ appointment.scheduled_for|date:"H:i" }}</small>
+      </div>
+      <div>
+        <span>Prioridade</span>
+        <strong class="badge {{ badge.tone }}">{{ badge.label }}</strong>
+        <small>{{ appointment.priority_reason }}</small>
+      </div>
+      <div>
+        <span>Status</span>
+        <strong>{{ appointment.get_status_display }}</strong>
+        <small>{{ appointment.location }}</small>
+      </div>
+    </div>
+
+    <div class="notes-box">
+      <span>Sintomas</span>
+      <p>{{ appointment.symptoms }}</p>
+    </div>
+
+    {% if appointment.status != "cancelada" %}
+      <form method="post" action="{% url 'appointment_cancel' appointment.pk %}">
+        {% csrf_token %}
+        <button class="button button-danger" type="submit">Cancelar consulta</button>
+      </form>
+    {% endif %}
+  </article>
+
+  <aside class="panel">
+    <div class="section-heading">
+      <span class="eyebrow">Observer</span>
+      <h2>Notificacoes</h2>
+    </div>
+    <div class="timeline">
+      {% for notification in appointment.notifications.all %}
+        <article class="timeline-item">
+          <strong>{{ notification.target }}</strong>
+          <span>{{ notification.channel }}</span>
+          <p>{{ notification.message }}</p>
+          <small>{{ notification.created_at|date:"d/m/Y H:i" }}</small>
+        </article>
+      {% endfor %}
+    </div>
+  </aside>
+</section>
+{% endblock %}

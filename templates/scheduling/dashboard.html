@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-grid">
+  <div class="hero-copy">
+    <p class="eyebrow">Sistema hospitalar com Design Patterns</p>
+    <h1>Agende consultas com prioridade, notificacao e arquitetura limpa.</h1>
+    <p>O VitaFlow organiza consultas presenciais, online e emergenciais usando uma separacao clara entre dominio, servicos, UI e views.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="{% url 'appointment_create' %}">Agendar consulta</a>
+      <span class="soft-label">{{ doctors_count }} medicos cadastrados</span>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <span class="pulse"></span>
+    <strong>Triagem inteligente</strong>
+    <p>Emergencias sobem automaticamente na fila e todos os envolvidos recebem notificacoes registradas.</p>
+  </div>
+</section>
+
+<section class="stats-grid" aria-label="Indicadores">
+  {% for stat in stats %}
+    <article class="stat-card {{ stat.tone }}">
+      <span>{{ stat.label }}</span>
+      <strong>{{ stat.value }}</strong>
+    </article>
+  {% endfor %}
+</section>
+
+<section class="content-grid">
+  <div class="panel">
+    <div class="section-heading">
+      <span class="eyebrow">Fluxo real</span>
+      <h2>Ultimos agendamentos</h2>
+    </div>
+    <div class="appointment-list">
+      {% for appointment in appointments %}
+        <a class="appointment-row" href="{{ appointment.get_absolute_url }}">
+          <span>
+            <strong>{{ appointment.patient.name }}</strong>
+            <small>{{ appointment.doctor.specialty }} com {{ appointment.doctor.name }}</small>
+          </span>
+          <span class="row-meta">
+            <b>{{ appointment.priority_label }}</b>
+            <small>{{ appointment.scheduled_for|date:"d/m/Y H:i" }}</small>
+          </span>
+        </a>
+      {% empty %}
+        <p class="empty-state">Nenhuma consulta ainda. Crie o primeiro agendamento para ver os padroes funcionando.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="panel">
+    <div class="section-heading">
+      <span class="eyebrow">Arquitetura</span>
+      <h2>Padroes aplicados</h2>
+    </div>
+    <div class="pattern-list">
+      {% for pattern in patterns %}
+        <article class="pattern-card">
+          <span>{{ pattern.category }}</span>
+          <strong>{{ pattern.name }}</strong>
+          <p>{{ pattern.role }}</p>
+          <small>{{ pattern.file_hint }}</small>
+        </article>
+      {% endfor %}
+    </div>
+  </aside>
+</section>
+{% endblock %}
