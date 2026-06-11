@@ -51,21 +51,6 @@
     </div>
   </div>
 
-  <aside class="panel">
-    <div class="section-heading">
-      <span class="eyebrow">Arquitetura</span>
-      <h2>Padroes aplicados</h2>
-    </div>
-    <div class="pattern-list">
-      {% for pattern in patterns %}
-        <article class="pattern-card">
-          <span>{{ pattern.category }}</span>
-          <strong>{{ pattern.name }}</strong>
-          <p>{{ pattern.role }}</p>
-          <small>{{ pattern.file_hint }}</small>
-        </article>
-      {% endfor %}
-    </div>
-  </aside>
+
 </section>
 {% endblock %}
