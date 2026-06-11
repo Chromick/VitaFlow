@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: vitaflow_db
+    restart: always
+    environment:
+      POSTGRES_DB: vitaflow_dev
+      POSTGRES_USER: vitaflow_user
+      POSTGRES_PASSWORD: vitaflow_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Serviço da Aplicação Web Django
+  web:
+    build: .
+    container_name: vitaflow_web
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=dev-secret-key-docker-12345
+      # Conecta ao banco de dados rodando no container 'db'
+      - DATABASE_URL=postgres://vitaflow_user:vitaflow_password@db:5432/vitaflow_dev
+    depends_on:
+      - db
+
+volumes:
+  # Define o volume para persistir os dados do banco localmente
+  postgres_data:
