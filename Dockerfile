@@ -22,8 +22,11 @@ RUN pip install -r requirements.txt
 # Copia o restante do código do projeto para dentro do container
 COPY . /app/
 
+# Coleta os arquivos estáticos para o STATIC_ROOT (necessário para o whitenoise servir na produção)
+RUN python manage.py collectstatic --noinput
+
 # Expõe a porta 8000 para podermos acessar do navegador
 EXPOSE 8000
 
-# Comando padrão ao rodar o container
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Comando padrão ao rodar o container na produção (usando gunicorn)
+CMD ["gunicorn", "vitaflow.wsgi:application", "--bind", "0.0.0.0:8000"]
