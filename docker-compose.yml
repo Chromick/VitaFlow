@@ -29,8 +29,18 @@ services:
       - SECRET_KEY=dev-secret-key-docker-12345
       # Conecta ao banco de dados rodando no container 'db'
       - DATABASE_URL=postgres://vitaflow_user:vitaflow_password@db:5432/vitaflow_dev
+      # URL do microsserviço de notificação
+      - NOTIFICATION_SERVICE_URL=http://notification:8001/notify
     depends_on:
       - db
+      - notification
+
+  # Microsserviço de Notificações
+  notification:
+    build: ./notification_service
+    container_name: vitaflow_notification
+    ports:
+      - "8001:8001"
 
 volumes:
   # Define o volume para persistir os dados do banco localmente

@@ -13,12 +13,32 @@ class AppointmentObserver(ABC):
 
 class PatientNotifier(AppointmentObserver):
     def update(self, appointment, event: str):
+        # Salva o log localmente
         NotificationLog.objects.create(
             appointment=appointment,
             target=appointment.patient.name,
             channel="SMS",
             message=f"{event}: sua consulta {appointment.get_kind_display()} foi atualizada.",
         )
+        
+        # Envia para o microsserviço de notificações
+        try:
+            import requests
+            import os
+            
+            notification_url = os.environ.get(
+                "NOTIFICATION_SERVICE_URL", 
+                "http://localhost:8001/notify"
+            )
+            
+            payload = {
+                "patient": appointment.patient.name,
+                "doctor": appointment.doctor.name,
+                "date": str(appointment.scheduled_for)
+            }
+            requests.post(notification_url, json=payload, timeout=2)
+        except Exception as e:
+            print(f"Erro ao contatar microsserviço de notificação: {e}")
 
 
 class DoctorNotifier(AppointmentObserver):
