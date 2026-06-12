@@ -3,9 +3,9 @@
 {% block content %}
 <section class="hero-grid">
   <div class="hero-copy">
-    <p class="eyebrow">Sistema hospitalar com Design Patterns</p>
-    <h1>Agende consultas com prioridade, notificacao e arquitetura limpa.</h1>
-    <p>O VitaFlow organiza consultas presenciais, online e emergenciais usando uma separacao clara entre dominio, servicos, UI e views.</p>
+    <p class="eyebrow">Plataforma Completa para Gestão em Saúde</p>
+    <h1>Agende consultas com eficiência, inteligência e prioridade.</h1>
+    <p>O VitaFlow organiza a fila de pacientes com regras dinâmicas para consultas presenciais, online e emergenciais, automatizando a comunicação e reduzindo faltas na sua clínica.</p>
     <div class="hero-actions">
       <a class="button button-primary" href="{% url 'appointment_create' %}">Agendar consulta</a>
       <span class="soft-label">{{ doctors_count }} medicos cadastrados</span>
@@ -13,8 +13,8 @@
   </div>
   <div class="hero-panel">
     <span class="pulse"></span>
-    <strong>Triagem inteligente</strong>
-    <p>Emergencias sobem automaticamente na fila e todos os envolvidos recebem notificacoes registradas.</p>
+    <strong>Triagem Inteligente</strong>
+    <p>Emergências e pacientes preferenciais sobem automaticamente na fila, e todos os envolvidos são notificados em tempo real.</p>
   </div>
 </section>
 
@@ -46,7 +46,7 @@
           </span>
         </a>
       {% empty %}
-        <p class="empty-state">Nenhuma consulta ainda. Crie o primeiro agendamento para ver os padroes funcionando.</p>
+        <p class="empty-state">Nenhuma consulta cadastrada. Crie o primeiro agendamento para iniciar os atendimentos.</p>
       {% endfor %}
     </div>
   </div>
