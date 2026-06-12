@@ -31,9 +31,15 @@ services:
       - DATABASE_URL=postgres://vitaflow_user:vitaflow_password@db:5432/vitaflow_dev
       # URL do microsserviço de notificação
       - NOTIFICATION_SERVICE_URL=http://notification:8001/notify
+      # URL do microsserviço de telemedicina
+      - TELEMEDICINE_SERVICE_URL=http://telemedicine:8002/generate-link
+      # URL do microsserviço de prontuário
+      - EHR_SERVICE_URL=http://ehr:8003/record
     depends_on:
       - db
       - notification
+      - telemedicine
+      - ehr
 
   # Microsserviço de Notificações
   notification:
@@ -42,6 +48,23 @@ services:
     ports:
       - "8001:8001"
 
+  # Microsserviço de Telemedicina (Jitsi)
+  telemedicine:
+    build: ./telemedicine_service
+    container_name: vitaflow_telemedicine
+    ports:
+      - "8002:8002"
+
+  # Microsserviço de Prontuário (EHR)
+  ehr:
+    build: ./ehr_service
+    container_name: vitaflow_ehr
+    ports:
+      - "8003:8003"
+    volumes:
+      - ehr_data:/app/ehr.db
+
 volumes:
   # Define o volume para persistir os dados do banco localmente
   postgres_data:
+  ehr_data:

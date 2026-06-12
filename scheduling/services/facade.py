@@ -27,7 +27,36 @@ class SchedulingFacade:
         appointment.priority_label = priority.label
         appointment.priority_score = priority.score
         appointment.priority_reason = priority.reason
+        
+        # Integrando com Microsserviço de Telemedicina
+        if appointment.kind == Appointment.Kind.ONLINE:
+            try:
+                import requests
+                import os
+                telemedicine_url = os.environ.get("TELEMEDICINE_SERVICE_URL", "http://localhost:8002/generate-link")
+                payload = {"doctor": appointment.doctor.name, "patient": appointment.patient.name}
+                response = requests.post(telemedicine_url, json=payload, timeout=2)
+                if response.status_code == 200:
+                    appointment.location = response.json().get("url", appointment.location)
+            except Exception as e:
+                print(f"Erro na telemedicina: {e}")
+
         appointment.save()
+
+        # Integrando com Microsserviço de Prontuário (EHR)
+        try:
+            import requests
+            import os
+            ehr_url = os.environ.get("EHR_SERVICE_URL", "http://localhost:8003/record")
+            ehr_payload = {
+                "patient": appointment.patient.name,
+                "doctor": appointment.doctor.name,
+                "date": str(appointment.scheduled_for),
+                "notes": f"Consulta marcada: {appointment.get_kind_display()} - Sintomas relatados: {appointment.symptoms}"
+            }
+            requests.post(ehr_url, json=ehr_payload, timeout=2)
+        except Exception as e:
+            print(f"Erro no EHR: {e}")
 
         self.subject.notify(appointment, "Agendamento confirmado")
         return appointment
