@@ -13,16 +13,25 @@
 <body>
   <header class="app-header">
     <a class="brand" href="{% url 'dashboard' %}" aria-label="{{ brand.name }}">
-      <span class="brand-mark">{{ brand.mark }}</span>
+      <img src="{% static 'img/logo.png' %}" alt="{{ brand.name }} Logo" class="brand-logo" style="max-height: 40px; width: auto; object-fit: contain; border-radius: 8px; background: transparent;" />
       <span>
         <strong>{{ brand.name }}</strong>
         <small>{{ brand.tagline }}</small>
       </span>
     </a>
+    {% if user.is_authenticated %}
     <nav class="nav-actions">
       <a href="{% url 'dashboard' %}">Painel</a>
+      <a href="{% url 'agenda' %}">Agenda</a>
+      <a href="{% url 'doctor_create' %}">Médicos</a>
+      <a href="{% url 'clinic_create' %}">Empresa</a>
       <a class="button button-primary" href="{% url 'appointment_create' %}">Novo agendamento</a>
+      <form method="post" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="button" style="padding: 8px 12px; font-size: 0.9rem;">Sair</button>
+      </form>
     </nav>
+    {% endif %}
   </header>
 
   <main class="page-shell">

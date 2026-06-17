@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-title">
+  <span class="eyebrow">Cadastro</span>
+  <h1>Cadastrar Empresa / Clínica</h1>
+  <p>Registre os dados da sua clínica ou hospital.</p>
+</section>
+
+<section class="content-grid">
+  <div class="panel form-panel">
+    <form method="post" class="form-grid" style="grid-template-columns: 1fr;">
+      {% csrf_token %}
+      {% for field in form %}
+        <label class="field">
+          <span>{{ field.label }}</span>
+          {{ field }}
+          {% if field.errors %}
+            <small class="field-error">{{ field.errors.0 }}</small>
+          {% endif %}
+        </label>
+      {% endfor %}
+      <div class="form-actions">
+        <a class="button" href="{% url 'dashboard' %}">Cancelar</a>
+        <button type="submit" class="button button-primary">Cadastrar clínica</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="section-heading">
+      <span class="eyebrow">Unidades</span>
+      <h2>Clínicas cadastradas</h2>
+    </div>
+    <div class="appointment-list">
+      {% for clinic in clinics %}
+        <div class="appointment-row">
+          <span>
+            <strong>{{ clinic.name }}</strong>
+            <small>CNPJ: {{ clinic.cnpj }}</small>
+          </span>
+          <span class="row-meta">
+            <small>{{ clinic.phone }}</small>
+            <small>{{ clinic.address }}</small>
+          </span>
+        </div>
+      {% empty %}
+        <p class="empty-state">Nenhuma clínica cadastrada ainda.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

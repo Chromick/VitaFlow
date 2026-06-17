@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 
-from .models import Appointment, Doctor
+from .models import Appointment, Clinic, Doctor
 
 
 class AppointmentForm(forms.Form):
@@ -57,5 +57,38 @@ class AppointmentForm(forms.Form):
         return {field: self.cleaned_data[field] for field in fields}
 
     def _apply_design_system(self):
+        for field in self.fields.values():
+            field.widget.attrs.setdefault("class", "form-control")
+
+
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ["name", "specialty", "crm"]
+        labels = {
+            "name": "Nome completo",
+            "specialty": "Especialidade",
+            "crm": "CRM",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault("class", "form-control")
+
+
+class ClinicForm(forms.ModelForm):
+    class Meta:
+        model = Clinic
+        fields = ["name", "cnpj", "phone", "address"]
+        labels = {
+            "name": "Nome da clínica",
+            "cnpj": "CNPJ",
+            "phone": "Telefone",
+            "address": "Endereço",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.setdefault("class", "form-control")

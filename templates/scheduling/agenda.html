@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-title">
+  <span class="eyebrow">Visão geral</span>
+  <h1>Agenda de Consultas</h1>
+  <p>Todas as consultas agendadas organizadas por data e horário.</p>
+</section>
+
+<section class="content-grid" style="grid-template-columns: 1fr;">
+  <div class="panel">
+    <div class="section-heading">
+      <span class="eyebrow">Consultas agendadas</span>
+      <h2>Próximas consultas</h2>
+    </div>
+
+    <div class="appointment-list">
+      {% for appointment in appointments %}
+        <a class="appointment-row" href="{{ appointment.get_absolute_url }}">
+          <span>
+            <strong>{{ appointment.patient.name }}</strong>
+            <small>{{ appointment.doctor.specialty }} com {{ appointment.doctor.name }}</small>
+          </span>
+          <span class="row-meta">
+            <b>{{ appointment.get_kind_display }}</b>
+            <small>{{ appointment.scheduled_for|date:"d/m/Y H:i" }}</small>
+          </span>
+          <span>
+            {% if appointment.kind == "emergencial" %}
+              <span class="badge danger">{{ appointment.priority_label }}</span>
+            {% elif appointment.priority_score >= 3 %}
+              <span class="badge warning">{{ appointment.priority_label }}</span>
+            {% else %}
+              <span class="badge neutral">{{ appointment.priority_label }}</span>
+            {% endif %}
+          </span>
+        </a>
+      {% empty %}
+        <p class="empty-state">Nenhuma consulta agendada no momento. Crie um novo agendamento para iniciar.</p>
+      {% endfor %}
+    </div>
+
+    {% if appointments %}
+      <div style="margin-top: 24px; text-align: center;">
+        <a class="button button-primary" href="{% url 'appointment_create' %}">Novo agendamento</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
